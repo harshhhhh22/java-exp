@@ -1,1 +1,111 @@
+public class VectorClass
+{
+    double[] comps;
+    public VectorClass(double[] arr) throws InvalidVectorException
+    {
+        if(arr == null || arr.length == 0)
+            throw new InvalidVectorException("Invalid Vector");
+        if(arr.length != 2 && arr.length != 3)
+            throw new InvalidVectorException("Only 2D or 3D supported");
+        comps = arr.clone();
+    }
+    public VectorClass add(VectorClass v) throws InvalidVectorException
+    {
+        checkDimension(v);
+        double results[] = new double[comps.length];
+        for(int i = 0; i < comps.length; i++)
+            results[i] = comps[i] + v.comps[i];
+        return new VectorClass(results);
+    }
+    public VectorClass subtract(VectorClass v) throws InvalidVectorException
+    {
+        checkDimension(v);
+        double results[] = new double[comps.length];
+        for(int i = 0; i < comps.length; i++)
+            results[i] = comps[i] - v.comps[i];
+        return new VectorClass(results);
+    }
+    public double dotProduct(VectorClass v) throws InvalidVectorException
+    {
+        checkDimension(v);
+        double result = 0;
+        for(int i = 0; i < comps.length; i++)
+            result += comps[i] * v.comps[i];
+        return result;
+    }
+    void checkDimension(VectorClass v) throws InvalidVectorException
+    {
+        if(comps.length != v.comps.length)
+            throw new InvalidVectorException("Incompatible Vector Dimension. Operation cannot be done");
+    }
+    public void print()
+    {
+        if(comps.length == 2)
+            System.out.println("Vector(" + comps[0] + ", " + comps[1] + ")");
+        else
+            System.out.println("Vector(" + comps[0] + ", " + comps[1] + ", " + comps[2] + ")");
+    }
+}
 
+public class VectorMain {
+    public static void main(String[] args) {
+        // Test 1: Valid 3D vectors
+        try {
+            VectorClass v1 = new VectorClass(new double[]{1, 2, 3});
+            VectorClass v2 = new VectorClass(new double[]{4, 5, 6});
+            VectorClass sum = v1.add(v2);
+            VectorClass diff = v1.subtract(v2);
+            double dot = v1.dotProduct(v2);
+            System.out.println("\nTest 1");
+            System.out.print("Vector 1: "); v1.print();
+            System.out.print("Vector 2: "); v2.print();
+            System.out.print("Addition: "); sum.print();
+            System.out.print("Subtraction: "); diff.print();
+            System.out.println("Dot Product: " + dot);
+        } catch (InvalidVectorException e) {
+            System.out.println(e.getMessage());
+        }
+        // Test 2: Valid 2D vectors
+        try {
+            VectorClass v1 = new VectorClass(new double[]{2, 3});
+            VectorClass v2 = new VectorClass(new double[]{5, 7});
+            VectorClass sum = v1.add(v2);
+            VectorClass diff = v1.subtract(v2);
+            double dot = v1.dotProduct(v2);
+            System.out.println("\nTest 2");
+            System.out.print("Vector 1: "); v1.print();
+            System.out.print("Vector 2: "); v2.print();
+            System.out.print("Addition: "); sum.print();
+            System.out.print("Subtraction: "); diff.print();
+            System.out.println("Dot Product: " + dot);
+        } catch (InvalidVectorException e) {
+            System.out.println(e.getMessage());
+        }
+        // Test 3: Dimension mismatch error
+        try {
+            VectorClass v1 = new VectorClass(new double[]{1, 2});
+            VectorClass v2 = new VectorClass(new double[]{3, 4, 5});
+            VectorClass sum = v1.add(v2);
+            System.out.println("\nTest 3");
+            sum.print();
+        } catch (InvalidVectorException e) {
+            System.out.println("\nTest 3 Error: " + e.getMessage());
+        }
+        // Test 4: Invalid vector size
+        try {
+            VectorClass v1 = new VectorClass(new double[]{1});
+            System.out.println("\nTest 4");
+            v1.print();
+        } catch (InvalidVectorException e) {
+            System.out.println("\nTest 4 Error: " + e.getMessage());
+        }
+    }
+}
+
+public class InvalidVectorException extends Exception
+{
+    public InvalidVectorException(String message)
+    {
+        super(message);
+    }
+}
